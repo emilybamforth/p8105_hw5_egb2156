@@ -145,3 +145,39 @@ ggplot(path_df, aes(x = week, y = observed_value, group = subject_id)) +
 
 Upon plotting the data, we can visualize that the experiment arm generally has higher observed values (going from around 0 up to 7.5) than the control group (going from around -2.5 to 4.5).
 
+## Problem 3
+
+Initial simulation:
+
+```{r, cache = TRUE}
+n = 30
+mu = 0
+sigma = 5
+
+sim_norm = function(samp_size, mu, sigma){
+  samp = tibble(x = rnorm(n = samp_size, mean = mu, sd = sigma))
+  
+  t_test_res = t.test(samp, conf.level = .95) %>% 
+    broom::tidy()
+  
+  samp %>%
+    summarise(mean = mean(x), p_value = pull(t_test_res, p.value))
+}
+
+output = vector("list", length = 5000)
+
+for (i in 1:5000) {
+  
+  output[[i]] = sim_norm(samp_size = n, mu = mu, sigma = sigma)
+  
+}
+
+output = bind_rows(output)
+```
+
+Now repeat for differing means:
+
+```{r}
+
+```
+
