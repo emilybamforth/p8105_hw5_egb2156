@@ -8,6 +8,7 @@ output: github_document
 ```{r setup}
 library(tidyverse)
 library(readr)
+library(patchwork)
 
 knitr::opts_chunk$set(
   fig.width = 6,
@@ -101,7 +102,7 @@ This has the data for one study participant; there is one row for the patient, a
 
 Then, let's create a dataframe with all file names, and read in the data from each subject:
 
-```{r}
+```{r build_df}
 path_df =
   tibble(
     path = list.files("data_prob2")) %>% 
@@ -116,7 +117,7 @@ read_csv(path_df$path[[1]])
 
 Next, time to tidy!
 
-```{r}
+```{r tidy_df}
 path_df =
 path_df %>% 
   mutate(path = str_replace(path, "data_prob2/", "")) %>% 
@@ -128,4 +129,19 @@ path_df %>%
   mutate(week = str_replace(week, "week_", ""))
 ```
 
+Our resulting dataframe is organized wherein each row is an observed value. Our columns include the `subject_id` and the `study_arm` (control or experiment), the `week` of the observation and the `observed_value`. There are `r nrow(path_df)` rows in the dataset.
+
+After tidying the data, time to plot:
+
+```{r plot}
+ggplot(path_df, aes(x = week, y = observed_value, group = subject_id)) +
+  geom_line(aes(color = subject_id)) + facet_grid(. ~ study_arm) +
+  labs(
+    title = "Observations Over Time by Study Arm",
+    x = "Week of Trial",
+    y = "Observed Value"
+  )
+```
+
+Upon plotting the data, we can visualize that the experiment arm generally has higher observed values (going from around 0 up to 7.5) than the control group (going from around -2.5 to 4.5).
 
