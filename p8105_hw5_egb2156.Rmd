@@ -32,7 +32,7 @@ Read in the data.
 
 ```{r}
 homicide_df =
-  read_csv("homicide-data.csv") %>% 
+  read_csv("data_prob1/homicide-data.csv") %>% 
   mutate(
     city_state = str_c(city, state, sep = "_"),
     resolved = case_when(
@@ -86,6 +86,38 @@ results_df %>%
   geom_point() +
   geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+```
+
+
+# Problem 2
+
+First, let's read in one dataset:
+
+```{r}
+data_1 = read_csv("data_prob2/con_01.csv")
+```
+
+This has the data for one study participant; there is one row for the patient, and each column is a some sort of observed value per each week of the study.
+
+Then, let's create a dataframe with all file names, and read in the data from each subject:
+
+```{r}
+path_df =
+  tibble(
+    path = list.files("data_prob2")) %>% 
+  mutate(
+    path = str_c("data_prob2/", path),
+    data = map(path, read.csv)
+    ) %>% 
+  unnest(cols = data)
+
+read_csv(path_df$path[[1]])
+```
+
+Next, time to tidy!
+
+```{r}
+
 ```
 
 
