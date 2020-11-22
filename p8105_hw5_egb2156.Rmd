@@ -200,10 +200,24 @@ output = bind_rows(output)
 
 ```
 
-Time to plot:
+Time to plot!
 
-```{r}
+Plot the proportion of times null was rejected (p<=0.05) against true value of mean:
 
-  
+```{r p3_plot_1}
+p1_df =
+  output %>% 
+  group_by(true_mean) %>% 
+  filter(p_value <= 0.05) %>% 
+  summarize(prop = n()/5000)
+
+ggplot(p1_df, aes(x = true_mean, y = prop)) +
+  geom_line() +
+  labs(
+    title = "How often null was rejected compared to true mean",
+    x = "True Value of the Mean",
+    y = "Proportion of Times Null was Rejected (p<=0.05)"
+  )
 ```
 
+Plot the average estimate of the sample mean against the true mean. Then plot the average estimate of the sample mean against the true mean.
